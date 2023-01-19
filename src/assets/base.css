@@ -1,5 +1,6 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  --color-text-green: hsla(160, 100%, 37%, 1);
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
@@ -38,6 +39,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
@@ -47,6 +49,22 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+
+    
+    --vs-controls-color: var(--color-text-green);
+    --vs-border-color: var(--color-text-green);
+
+    --vs-dropdown-bg: #282c34;
+    --vs-dropdown-color: var(--color-text-green);
+    --vs-dropdown-option-color: var(--color-text-green);
+
+    --vs-selected-bg: var(--color-text-green);
+    --vs-selected-color: var(--color-text-green);
+
+    --vs-search-input-color: var(--color-text-green);
+
+    --vs-dropdown-option--active-bg: var(--color-background);
+    --vs-dropdown-option--active-color: var(--color-text-green);
   }
 }
 

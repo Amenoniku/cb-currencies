@@ -1,5 +1,6 @@
 <template>
   <CurrencySelect :currencies="sortedCurrencies" />
+  <CurrencySelect :currencies="sortedCurrencies" />
 </template>
 <script setup lang="ts">
 import { onMounted, computed } from "vue";
