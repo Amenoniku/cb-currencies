@@ -19,7 +19,6 @@ export const useCurrenciesStore = defineStore("currencies", () => {
     );
   });
   return {
-    currencies,
     fetchCurrencies,
     sortedCurrencies,
   };

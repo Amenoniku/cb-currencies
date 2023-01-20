@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: "/currencies",
       name: "currencies",
-      component: () => import("../views/CurrensiesView.vue"),
+      component: () => import("../views/CurrenciesView.vue"),
     },
     {
       path: "/Converting",

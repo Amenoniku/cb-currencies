@@ -1,81 +1,61 @@
 <template>
-  <div>
-    <select v-model="selectedCurrency">
-      <option value="" disabled selected>Выберите валюту</option>
-      <option
-        v-for="currency in currencies"
-        :key="currency.ID"
-        :value="currency"
-      >
-        {{ currency.Name }}
-      </option>
-    </select>
-    <input type="number" v-model.number="amount" />
-
-    <div class="result">
-      <label class="green">Конвертация: </label>
-      <span>{{ conversionRate }}</span>
-    </div>
-    <div v-if="isCurrencyChosen">
-      <label class="green">Курс: </label>
-      <span>{{ moneyFormat({ value: selectedCurrency.Value }) }}</span>
-      <br />
-      <label class="green">Номинал: </label>
-      <span>{{
-        moneyFormat({
-          value: selectedCurrency.Nominal,
-          charCode: selectedCurrency.CharCode,
-        })
-      }}</span>
-    </div>
+  <div class="block">
+    <input
+      :value="amount"
+      type="number"
+      :disabled="inputDisabled"
+      @input="emit('changeAmout', $event.target.value)"
+    />
+    <v-select
+      placeholder="RUB"
+      :modelValue="currency"
+      :options="exchangeRatesArray"
+      label="charCode"
+      :clearable="false"
+      @update:modelValue="emit('updateCurrency', $event)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import type { ExchangeRate } from "../models/Currencies.model";
+type Booleanish = boolean | "true" | "false";
+interface Props {
+  exchangeRatesArray: ExchangeRate[];
+  inputDisabled?: Booleanish;
+  amount: number | string;
+  currency: ExchangeRate;
+}
 
-import { moneyFormat } from "../utils";
-import type { Currency } from "../models/Currencies.model";
+const props = withDefaults(defineProps<Props>(), {
+  inputDisabled: false,
+});
 
-const props = defineProps<{
-  currencies: Currency[];
+const emit = defineEmits<{
+  (e: "changeAmout", value: number): number;
+  (e: "updateCurrency", currency: ExchangeRate): ExchangeRate;
 }>();
-
-const selectedCurrency = ref<Currency>({} as Currency);
-const amount = ref<number>(1);
-
-const isCurrencyChosen = computed(
-  (): boolean => !!Object.keys(selectedCurrency.value).length
-);
-const conversionRate = computed((): string =>
-  isCurrencyChosen.value
-    ? moneyFormat({
-        value:
-          amount.value *
-          (selectedCurrency.value.Value / selectedCurrency.value.Nominal),
-      })
-    : "Выберите валюту для конвертации в рубли"
-);
 </script>
 
 <style scoped>
-select,
-input {
-  padding: 0.4em;
-  margin: 0.4em;
-  font-size: 1em;
-  border-radius: 3px;
-  border: 1px solid #ccc;
+.block {
+  display: flex;
+  align-items: center;
+  margin: 10px;
 }
-select {
-  width: auto;
+
+.block input {
+  margin-right: 10px;
+  background-color: transparent;
+  color: var(--color-text-green);
+  border: var(--vs-border-width) var(--vs-border-style) var(--vs-border-color);
+  border-radius: var(--vs-border-radius);
+  padding: 9px 8px 6px 9px;
+  white-space: normal;
+  box-sizing: border-box;
 }
-input {
-  width: 100px;
-}
-.result {
-  font-size: 2em;
-  margin: 1em 0;
-  font-weight: bold;
+
+.block .v-select {
+  width: 110px;
 }
 </style>
