@@ -10,7 +10,7 @@
       placeholder="RUB"
       :modelValue="currency"
       :options="exchangeRatesArray"
-      label="charCode"
+      label="CharCode"
       :clearable="false"
       @update:modelValue="emit('updateCurrency', $event)"
     />
@@ -18,13 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ExchangeRate } from "../models/Currencies.model";
+import type { Currency } from "../models/Currencies.model";
 type Booleanish = boolean | "true" | "false";
 interface Props {
-  exchangeRatesArray: ExchangeRate[];
+  exchangeRatesArray: Currency[];
   inputDisabled?: Booleanish;
   amount: number | string;
-  currency: ExchangeRate;
+  currency: Currency;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: "changeAmout", value: number): number;
-  (e: "updateCurrency", currency: ExchangeRate): ExchangeRate;
+  (e: "updateCurrency", currency: Currency): Currency;
 }>();
 </script>
 
@@ -56,6 +56,6 @@ const emit = defineEmits<{
 }
 
 .block .v-select {
-  width: 110px;
+  width: 150px;
 }
 </style>

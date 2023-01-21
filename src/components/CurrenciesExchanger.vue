@@ -4,7 +4,7 @@
     <CurrencySelect
       :amount="baseCurrencyAmount"
       :currency="baseCurrency"
-      :exchangeRatesArray="exchangeRatesArray"
+      :exchangeRatesArray="currencies"
       @change-amout="baseCurrencyAmount = $event"
       @updateCurrency="baseCurrency = $event"
     />
@@ -12,9 +12,8 @@
     <CurrencySelect
       :amount="convertedCurrencyAmount"
       :currency="convertedCurrency"
-      :exchangeRatesArray="exchangeRatesArray"
+      :exchangeRatesArray="currencies"
       inputDisabled="true"
-      @change-amout="convertedCurrencyAmount = $event"
       @updateCurrency="convertedCurrency = $event"
     />
   </div>
@@ -24,63 +23,38 @@ import { ref, watch, computed } from "vue";
 
 import CurrencySelect from "./CurrencySelect.vue";
 
-import type {
-  Currency,
-  ExchangeRate,
-  ExchangeRates,
-} from "../models/Currencies.model";
+import type { Currency } from "../models/Currencies.model";
 
 const props = defineProps<{
   currencies: Currency[];
 }>();
 
-const exchangeRates = computed<ExchangeRates>(() => {
-  let rates: ExchangeRates = { RUB: 1 };
-  props.currencies.forEach(
-    (currency: Currency) =>
-      (rates[currency.CharCode] = currency.Value / currency.Nominal)
-  );
-  return rates;
-});
-
-const exchangeRatesArray = computed<ExchangeRate[]>(() =>
-  Object.keys(exchangeRates.value).map((key) => ({
-    charCode: key,
-    value: exchangeRates.value[key],
-  }))
-);
-const baseCurrency = ref<ExchangeRate>({
-  charCode: "RUB",
-  value: 1,
-});
+const baseCurrency = ref<Currency>({} as Currency);
 const baseCurrencyAmount = ref(1);
 
-const convertedCurrency = ref<ExchangeRate>({
-  charCode: "USD",
-  value: 1,
-});
-const convertedCurrencyAmount = computed<string | number>(() =>
+const convertedCurrency = ref<Currency>({} as Currency);
+const convertedCurrencyAmount = computed<string>(() =>
   (
     baseCurrencyAmount.value *
-    (exchangeRates.value[baseCurrency.value.charCode] /
-      exchangeRates.value[convertedCurrency.value.charCode])
+    (baseCurrency.value.Value / convertedCurrency.value.Value)
   ).toFixed(2)
 );
 
 const inputChange = (): void => {
   baseCurrencyAmount.value = Number(convertedCurrencyAmount.value);
-  const { charCode: baseCharCode, value: baseValue } = baseCurrency.value;
-  baseCurrency.value.charCode = convertedCurrency.value.charCode;
-  baseCurrency.value.value = convertedCurrency.value.value;
-  convertedCurrency.value.charCode = baseCharCode;
-  convertedCurrency.value.value = baseValue;
+  const savedBaseCurrency = baseCurrency.value;
+  baseCurrency.value = convertedCurrency.value;
+  convertedCurrency.value = savedBaseCurrency;
 };
 watch(
   () => props.currencies,
   (currs) => {
-    if (currs)
-      convertedCurrency.value.value =
-        exchangeRates.value[convertedCurrency.value.charCode];
+    if (currs.length) {
+      baseCurrency.value = currs.find((c) => c.CharCode === "RUB") as Currency;
+      convertedCurrency.value = currs.find(
+        (c) => c.CharCode === "USD"
+      ) as Currency;
+    }
   },
   { immediate: true }
 );

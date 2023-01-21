@@ -16,11 +16,3 @@ export interface CBR {
   Date: string;
   Valute: Valute;
 }
-
-export interface ExchangeRate {
-  charCode: string;
-  value: number;
-}
-export interface ExchangeRates {
-  [key: string]: number;
-}
